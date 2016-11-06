@@ -1,0 +1,24 @@
+{
+    "name": "desmart/jwt-auth",
+    "authors": [
+        {
+            "name": "Kamil Fojuth",
+            "email": "fen@desmart.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "laravel/framework": "5.3.*",
+        "lcobucci/jwt": "^3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "DeSmart\\JWTAuth\\": "src/"
+        }
+    },
+    "prefer-stable": true
+}
