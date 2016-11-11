@@ -2,64 +2,62 @@
 
 namespace DeSmart\JWTAuth\Auth;
 
-use Lcobucci\JWT\Token;
 use DeSmart\JWTAuth\Exception\UserNotFoundException;
+use Lcobucci\JWT\Token;
 
 class Guard
 {
 
     /**
-     * @var string
+     * @var \Illuminate\Database\Eloquent\Model
      */
-    protected $userModelClass;
-
-    public function __construct(string $userModelClass)
-    {
-        $this->userModelClass = $userModelClass;
-    }
+    protected $userModel;
 
     /**
-     * @var User
+     * @var \Illuminate\Database\Eloquent\Model
      */
     protected $user;
 
-    public function foo($id)
+    public function __construct($userModel)
     {
-        $user = ($this->userModelClass)::find($id);
-        dd($user);
+        $this->userModel = $userModel;
     }
 
+    /**
+     * @param Token $token
+     */
     public function loginByToken(Token $token)
     {
         $id = $token->getClaim('uid');
+        $user = $this->userModel->find($id);
 
-        $user = ($this->userModelClass)::find($id);
-dd($user);
-
-
-
-
-
-        $uid = $token->getClaim('uid');
-
-        try {
-            $this->user = $this->usersRepository->get($uid);
-        } catch (UserNotFoundException $e) {
-            // do nothing here
+        if (null === $user) {
+            throw new  UserNotFoundException;
         }
+
+        $this->user = $user;
     }
 
-    public function loginUser(User $user)
+    /**
+     * @param $user
+     */
+    public function loginUser($user)
     {
         $this->user = $user;
     }
 
+    /**
+     * @return bool
+     */
     public function isUserLogged(): bool
     {
         return null !== $this->user;
     }
 
-    public function getUser(): User
+    /**
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getUser()
     {
         return $this->user;
     }

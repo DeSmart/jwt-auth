@@ -7,7 +7,6 @@ use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac;
 use Lcobucci\JWT\Token;
-use Signapps\Domain\Users\Entity\User;
 use DeSmart\JWTAuth\Exception\InvalidTokenException;
 
 class TokenFactory
@@ -44,13 +43,13 @@ class TokenFactory
      * @param User $user
      * @return Token
      */
-    public function createForUser(User $user): Token
+    public function createForUser($user): Token
     {
         $expiration = $this->now->add(\DateInterval::createFromDateString($this->tokenExpTtl));
 
         return (new Builder)->setIssuedAt($this->now->getTimestamp())
             ->setExpiration($expiration->getTimestamp())
-            ->set('uid', $user->getId())
+            ->set('uid', $user->id)
             ->sign($this->getSigner(), $this->tokenSecret)
             ->getToken();
     }

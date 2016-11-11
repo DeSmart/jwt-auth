@@ -20,7 +20,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $config = $this->app['config']->get('jwt-auth');
 
         $this->app->singleton(Guard::class, function () use ($config) {
-            return new Guard($config['user_model_class']);
+            return new Guard(new $config['user_model_class']);
         });
 
         $this->registerMiddleware();
