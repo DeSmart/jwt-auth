@@ -1,5 +1,6 @@
 {
     "name": "desmart/jwt-auth",
+    "description": "Simple JWT auth implementation for Laravel.",
     "authors": [
         {
             "name": "Kamil Fojuth",
