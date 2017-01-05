@@ -3,6 +3,7 @@
 namespace DeSmart\JWTAuth\Auth;
 
 use DeSmart\JWTAuth\Exception\UserNotFoundException;
+use Illuminate\Database\Eloquent\Model;
 use Lcobucci\JWT\Token;
 
 class Guard
@@ -18,7 +19,7 @@ class Guard
      */
     protected $user;
 
-    public function __construct($userModel)
+    public function __construct(Model $userModel)
     {
         $this->userModel = $userModel;
     }
