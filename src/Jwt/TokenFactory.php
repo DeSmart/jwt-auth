@@ -43,15 +43,21 @@ class TokenFactory
      * @param User $user
      * @return Token
      */
-    public function createForUser($user): Token
+    public function createForUser($user, array $claims = []): Token
     {
         $expiration = $this->now->add(\DateInterval::createFromDateString($this->tokenExpTtl));
 
-        return (new Builder)->setIssuedAt($this->now->getTimestamp())
+        $token = (new Builder)->setIssuedAt($this->now->getTimestamp())
             ->setExpiration($expiration->getTimestamp())
-            ->set('uid', $user->id)
-            ->sign($this->getSigner(), $this->tokenSecret)
-            ->getToken();
+            ->set('uid', $user->id);
+
+        // set additional claims
+        foreach ($claims as $key => $value) {
+            $token->set($key, $value);
+        }
+
+        return $token->sign($this->getSigner(), $this->tokenSecret)
+                     ->getToken();
     }
 
     /**
