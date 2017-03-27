@@ -51,7 +51,7 @@ class TokenFactory
         $token = (new Builder)->setIssuedAt($this->now->getTimestamp())
             ->setExpiration($expiration->getTimestamp());
 
-        $claims = ['uid' => $user->id];
+        $claims = ['uid' => is_callable([$user, 'getId']) ? $user->getId() : $user->id];
 
         foreach (array_merge($extraClaims, $claims) as $key => $value) {
             $token->set($key, $value);

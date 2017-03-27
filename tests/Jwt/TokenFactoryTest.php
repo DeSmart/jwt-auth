@@ -33,6 +33,25 @@ class TokenFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_creates_token_for_user_with_getter_method()
+    {
+        $now = new \DateTimeImmutable();
+
+        $user = new User('foo');
+        $expireAt = $now->add(\DateInterval::createFromDateString($this->expireTtl));
+
+        $expectedToken = (new Builder)->setIssuedAt($now->getTimestamp())
+            ->setExpiration($expireAt->getTimestamp())
+            ->set('uid', 'foo')
+            ->sign(new Hmac\Sha256, $this->secret)
+            ->getToken();
+
+        $factory = $this->createFactory($now);
+
+        $this->assertEquals($expectedToken, $factory->createForUser($user));
+    }
+
+    /** @test */
     public function it_creates_token_with_extra_claims()
     {
         $now = new \DateTimeImmutable();
@@ -116,5 +135,19 @@ class TokenFactoryTest extends \PHPUnit_Framework_TestCase
     private function createFactory($now = null, string $secret = null): TokenFactory
     {
         return new TokenFactory($this->expireTtl, $secret ?? $this->secret, $now ?? new \DateTimeImmutable);
+    }
+}
+
+class User {
+    private $id;
+
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }
