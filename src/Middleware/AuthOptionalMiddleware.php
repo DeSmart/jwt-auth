@@ -28,12 +28,15 @@ class AuthOptionalMiddleware extends AuthMiddleware
         }
 
         $this->validateToken($token);
+        $this->beforeLogin($token);
 
         $this->guard->loginByToken($token);
 
         if (false === $this->guard->isUserLogged()) {
             $this->throwUnauthorizedException();
         }
+
+        $this->afterLogin();
 
         return $next($request);
     }

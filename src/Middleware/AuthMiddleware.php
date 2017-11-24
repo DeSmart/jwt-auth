@@ -43,13 +43,17 @@ class AuthMiddleware
     public function handle(Request $request, callable $next)
     {
         $token = $this->tokenFactory->createFromRequest($request);
+
         $this->validateToken($token);
+        $this->beforeLogin($token);
 
         $this->guard->loginByToken($token);
 
         if (false === $this->guard->isUserLogged()) {
             $this->throwUnauthorizedException();
         }
+
+        $this->afterLogin();
 
         return $next($request);
     }
@@ -76,5 +80,25 @@ class AuthMiddleware
     protected function throwUnauthorizedException()
     {
         throw new UnauthorizedHttpException('Bearer');
+    }
+
+    /**
+     * Code executed before logg-in attempt.
+     *
+     * Usable by extending this middleware
+     *
+     * @param string $token
+     */
+    protected function beforeLogin($token)
+    {
+    }
+
+    /**
+     * Code executed after successful logging in.
+     *
+     * Usable by extending this middleware
+     */
+    protected function afterLogin()
+    {
     }
 }
